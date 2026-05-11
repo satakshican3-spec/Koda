@@ -58,7 +58,7 @@ if mode == "Document Manager":
 
     st.subheader(f"Files in /{selected_folder}")
     if st.session_state.folders[selected_folder]:
-        for idx, doc in enumerate(st.session_state.folders[selected_folder):
+        for idx, doc in enumerate(st.session_state.folders[selected_folder]):
             with st.expander(f"{doc['title']} (Created: {doc['date']})"):
                 st.write(doc['content'])
                 if st.button(f"Delete {doc['title']}", key=f"del_{idx}"):
