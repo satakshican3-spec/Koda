@@ -2,98 +2,126 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-st.set_page_config(page_title="Koda Planner", layout="wide")
+st.set_page_config(page_title="Koda: Multi-Modal Suite", layout="wide")
 
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 if "folders" not in st.session_state:
     st.session_state.folders = {"Main": []}
-if "trips" not in st.session_state:
-    st.session_state.trips = []
+if "matrix_data" not in st.session_state:
+    st.session_state.matrix_data = []
 
 if not st.session_state.authenticated:
-    st.title("Koda: System Locked")
-    password = st.text_input("Enter Access Key", type="password")
-    if st.button("Unlock"):
-        if password == "1234":
+    st.title("Koda: Authentication Required")
+    st.write("System Status: Locked")
+
+    access_token = st.text_input("Enter Master Session Key", type="password")
+
+    if st.button("Initialize Decryption"):
+        if access_token == "1234":
             st.session_state.authenticated = True
             st.rerun()
         else:
-            st.error("Access Denied")
+            st.error("Invalid Token. Authorization Denied.")
     st.stop()
 
 st.sidebar.title("Koda Suite")
-mode = st.sidebar.radio("Navigate", ["Document Manager", "Story Lab", "Travel Planner"])
+st.sidebar.write("Core Status: Active")
+module = st.sidebar.radio("Select Module Profile", ["Document Manager", "Story Lab", "Travel Planner"])
 
-if st.sidebar.button("Lock System"):
-    st.session_state.authenticated = Falase
+if st.sidebar.button("Terminate Session"):
+    st.session_state.authenticated = False
     st.rerun()
-
-if mode == "Document Manager":
-    st.header("Document Manager")
+ro
+if module == "Document Manager":
+    st.header"Hierarchical File Explorer")
 
     col1, col2 = st.columns([1, 2])
     with col1:
-        new_folder = st.text_input("New Folder Name:")
-        if st.button("Create Folder"):
-            if new_folder and new_folder not in st.session_state.folders:
-                st.session_state.folders[new_folders] = []
-                st.success(f"Folder '{new_folder}' created")
+        new_dir = st.text_input("Provision New Directory Name:")
+        if st.button("Register Folder"):
+            if new_dir and new_dir not in st.session_state.folders:
+                st.session_state.foldes[new_dir] = []
+                st.success(f"Directory /{new_dir} appended to mapping data.")
                 st.rerun()
+
     st.write("---")
 
-    selected_folder = st.selectbox("Current Directory:", options=list(st.session_state.folders.keys()))
+    current_dir = st.selectbox("Navigate Virtual File System:", options=list(st.session_state.folders.key()))
 
-    with st.expander(f"New Document in/{selected_folder}"):
-        doc_title = st.text_input("Document Title")
-        doc_content = st.text_area("Content")
-        if st.button("Save to Folder"):
-            st.session_state.folders[selected_folder].append({
-                "title": doc_title,
-                "content": doc_content,
-                "date": datetime.now().strftime("%Y-%m-%d")
-            })
-            st.success("Document Saved")
-            st.rerun()
+    with st.expander(f"Construct Document Payload under /{current_dir}"):
+        doc_title = st.text_input("Document Node Title")
+        doc_payload = st.text_area("Document Content Payload")
+        if st.button("Write to Node Array"):
+            if doc_title:
+                st.session_state.folders[current_dir].append({
+                    "title": doc_title,
+                    "content": doc_payload,
+                    "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                })
+                st.success("Data written safely to memory storage node.")
+                st.rerun()
 
-    st.subheader(f"Files in /{selected_folder}")
-    if st.session_state.folders[selected_folder]:
-        for idx, doc in enumerate(st.session_state.folders[selected_folder]):
-            with st.expander(f"{doc['title']} (Created: {doc['date']})"):
-                st.write(doc['content'])
-                if st.button(f"Delete {doc['title']}", key=f"del_{idx}"):
-                    st.session_state.folders[selected_folder].pop(idx)
+    st.subheader(f"Directory Audit for Location: /{current_dir}")
+    if st.session_state.folders[current_dir]:
+        for node_idx, document_node in enumerate(st.session_state.folders[current_dir]):
+            with st.expander(f"Node File: {document_node['title']} [Timestamp: {document_node['date']}]"):
+                st.text(document_node['content'])
+                if st.button(f"Purge File Node", key=f"purge_{current_dir}_{node_idx}"):
+                    st.session_state.folders[current_dir].pop(node_idx)
                     st.rerun()
     else:
-        st.info("This folder is empty.")
+        st.info("Target directory array contains 0 file items.")
 
-elif mode == "Story Lab":
-    st.header("Story Lab")
-    title = st.text_input("Story Title", value="Untitled")
-    content = st.text_area("Write your draft...", height=400)
+elif module == "Story Lab":
+    st.header("Narrative Design Studio & Workspace")
+    story_node_title = st.text_input("Production Title", value="Draft_Segment")
+    input_buffer = st.text_area("Narrative Input Buffer Stream", height=400)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.download_button("Export as .txt", data=content, file_name=f"{title}.txt")
-    with col2:
-        words = len(content.split())
-        st.write(f"Word Count: {words}")
+    word_count_vector = len(input_buffer.split())
+    character_density = len(input_buffer)
 
-elif mode == "Travel Planner":
-    st.header("Travel Logistics")
+    metrics_col1, metrics_col2 = st.columns(2)
+    with metrics_col1:
+        st.write(f"Runtime Word Metrics: {word_count_vector}")
+    with metrics_col2:
+        st.write(f"Raw Character Density: {character_density}")
 
-    with st.expander("Add Trip Destination"):
-        d_name = st.text_input("Place")
-        d_date = st.date_input("Date")
-        d_notes = st.text_input("Quick Notes")
-        if st.button("Add to Itinerary"):
-            st.session_state.trips.append({"Destination": d_name, "Date": str(d_date), "Notes": d_notes})
+    st.download_button(
+        label="Download Plain Text Document (.txt)",
+        data=input_buffer,
+        file_name=f"{story_node_title}.txt",
+        mime="text/plain"
+    )
+
+elif module == "Travel Planner":
+    st.header("Logistics Relational Data Matrix")
+
+    with st.expander("Ingest New Matrix Vector Point"):
+        geo_target = st.text_input("Geographical Node Location")
+        temporal_target = st.date_input("Temporal Coordinate Date")
+        logistics_notes = st.text_area("Logistics Context Payload")
+
+        if st.button("Append Vector Entry"):
+            if geo_target:
+                st.session_state.matrix_data.append({
+                    "Destination Vector": geo_target,
+                    "Temporal Stamp": str(temporal_target),
+                    "Logistics Context": logistics_notes
+                })
+                st.success("Vector successfully appended to global dataframe array.")
+                st.rerun()
+
+    st.subheader("Tabular Data Visualization Canvas")
+    if st.session_state.matrix_data:
+        dataframe_matrix = pd.DataFrame(st.session_state.matrix_data)
+        st.dataframe(dataframe_matrix, use_container_width=True)
+
+        if st.button("Wipe Matrix Memory"):
+            st.session_state.matrix_data = []
             st.rerun()
-
-    if st.session_state.trips:
-        st.table(pd.DataFrame(st.session_state.trips))
-    else:
-        st.write("No trips planned yet.")
+        else:
+            st.info("Logistics matrix array currently empty. Awaiting operational input data points.")
 
 st.write("---")
-st.caption("Koda v1.0 | Student Developer Portfolio | Calgary, AB")
+st.caption("Koda Software Suite v1.0 | Calgary Portfolio Project Asset")
