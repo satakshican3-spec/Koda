@@ -47,7 +47,7 @@ if module == "Document Manager":
 
     st.write("---")
 
-    current_dir = st.selectbox("Navigate Virtual File System:", options=list(st.session_state.folders.key()))
+    current_dir = st.selectbox("Navigate Virtual File System:", options=list(st.session_state.folders.keys()))
 
     with st.expander(f"Construct Document Payload under /{current_dir}"):
         doc_title = st.text_input("Document Node Title")
