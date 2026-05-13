@@ -32,9 +32,9 @@ module = st.sidebar.radio("Select Module Profile", ["Document Manager", "Story L
 if st.sidebar.button("Terminate Session"):
     st.session_state.authenticated = False
     st.rerun()
-ro
+
 if module == "Document Manager":
-    st.header"Hierarchical File Explorer")
+    st.header("Hierarchical File Explorer")
 
     col1, col2 = st.columns([1, 2])
     with col1:
